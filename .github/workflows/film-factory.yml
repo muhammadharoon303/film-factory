@@ -1,0 +1,79 @@
+name: film-factory
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"      # wakes every 3h; the script decides if a film is due (also = retry ticks)
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "1 = generate now even if this slot already has a film"
+        default: "0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: film-factory
+  cancel-in-progress: false
+
+jobs:
+  film:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    env:
+      FORCE: ${{ github.event.inputs.force }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Gate (cheap check - is a film due?)
+        id: gate
+        run: |
+          pip install pyyaml
+          python -m src.main --check
+
+      - name: Git identity
+        if: steps.gate.outputs.due == 'true'
+        run: |
+          git config user.name "film-factory-bot"
+          git config user.email "film-factory-bot@users.noreply.github.com"
+
+      - name: System packages
+        if: steps.gate.outputs.due == 'true'
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+
+      - name: Python packages
+        if: steps.gate.outputs.due == 'true'
+        run: pip install -r requirements.txt
+
+      - name: Generate film and upload
+        if: steps.gate.outputs.due == 'true'
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python -m src.main
+
+      - name: Commit state and log
+        if: always() && steps.gate.outputs.due == 'true'
+        run: |
+          git add data
+          git commit -m "film-factory: update log [skip ci]" || echo "nothing to commit"
+          git pull --rebase --autostash && git push || true
+
+      - name: Keep rendered video if the run failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failed-run
+          path: |
+            output/**/final.mp4
+            output/**/run.log
+          retention-days: 3
+          if-no-files-found: ignore

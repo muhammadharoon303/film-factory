@@ -1,0 +1,17 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
+numpy==1.26.4
+pyyaml
+requests
+pillow
+torch==2.4.1+cpu
+diffusers==0.30.3
+transformers==4.44.2
+accelerate==0.34.2
+peft==0.12.0
+huggingface_hub==0.25.2
+llama-cpp-python==0.3.2
+piper-tts==1.2.0
+google-api-python-client
+google-auth
+google-auth-oauthlib

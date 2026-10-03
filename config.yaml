@@ -1,0 +1,74 @@
+# ============================================================
+#  ONE FILE TO CONTROL EVERYTHING. Edit, commit, done.
+# ============================================================
+channel:
+  name: "Midnight Fables"
+  language_name: "English"          # language the story/dialogue/subtitles are written in
+  disclosure_text: "This film is original and AI-generated: story by an open-weights LLM, images by Stable Diffusion, voices by Piper TTS, music synthesized procedurally."
+
+film:
+  genre: "mystery fantasy"          # e.g. horror, sci-fi, comedy, fairy tale, noir, adventure
+  tone: "atmospheric, emotional, with a twist ending"
+  theme_hint: ""                    # optional: "a lighthouse keeper", "robots in a desert" ...
+  family_friendly: true
+  target_duration_sec: 480          # what the writer aims for
+  max_duration_sec: 570             # HARD CAP (never exceeds 600 = 10 min)
+  seconds_per_scene: 24
+  shots_per_scene: 2                # images per scene
+  visual_style: "cinematic digital painting, dramatic lighting, highly detailed, 35mm film look"
+
+schedule:
+  interval_hours: 24                # 24 = daily, 12 = twice a day, 168 = weekly
+  anchor_utc: "2026-01-01T00:00:00Z"  # slots are counted from here (keeps times stable)
+  max_attempts_per_slot: 3          # failed runs are retried on the next cron tick up to this many times
+
+publish:
+  mode: "scheduled"                 # scheduled = upload private, YouTube flips to public at publishAt | immediate
+  hour_utc: 15
+  minute_utc: 0
+  min_lead_minutes: 60              # if the time is too close, push to the next day
+  immediate_privacy: "public"       # used when mode = immediate (public | unlisted | private)
+
+youtube:
+  category_id: "1"                  # 1 = Film & Animation
+  made_for_kids: false
+  contains_synthetic_media: true    # AI-content disclosure flag (keep true)
+  set_thumbnail: true               # needs a phone-verified channel
+  default_tags: ["short film", "AI film", "original story"]
+
+llm:
+  provider_order: ["groq", "local"] # groq is skipped automatically if GROQ_API_KEY secret is absent
+  groq_model: "llama-3.3-70b-versatile"
+  local_repo: "bartowski/Qwen2.5-7B-Instruct-GGUF"      # Apache-2.0 weights
+  local_file: "Qwen2.5-7B-Instruct-Q4_K_M.gguf"
+  n_threads: 4
+
+images:
+  base_model: "stable-diffusion-v1-5/stable-diffusion-v1-5"   # CreativeML OpenRAIL-M
+  lcm_lora: "latent-consistency/lcm-lora-sdv1-5"              # 4-step fast sampling on CPU
+  width: 640
+  height: 360
+  steps: 4
+
+voices:                              # Piper voice ids: https://huggingface.co/rhasspy/piper-voices
+  narrator: "en_US-lessac-medium"
+  characters: ["en_US-ryan-medium", "en_US-amy-medium", "en_GB-alan-medium"]
+  length_scale: 1.0                 # >1 = slower speech
+  # Check each voice's MODEL_CARD license before monetizing.
+
+music:
+  enabled: true
+  mood: "auto"                      # auto | dark | calm | tense | hopeful | epic | mysterious | playful
+  volume: 0.14
+
+render:
+  width: 1280
+  height: 720
+  fps: 24
+  fade_sec: 0.4
+  subtitles: true
+  subtitle_font: "DejaVu Sans"
+  subtitle_size: 13
+
+retry:
+  upload_attempts: 4
