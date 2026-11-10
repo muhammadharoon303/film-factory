@@ -2,6 +2,7 @@
 
 | Started (UTC) | Slot | Status | Title | YouTube | Publish at | Length | Error |
 |---|---|---|---|---|---|---|---|
+| 2026-11-10T21:20:07Z | 313 | started |  |  |  |  |  |
 | 2026-11-10T14:59:33Z | 313 | failed |  |  |  |  | [story] LLM could not produce valid JSON: all LLM providers failed: Failed to load shared library '/opt/hostedtoolcache/ |
 | 2026-11-10T03:45:34Z | 313 | failed |  |  |  |  | [story] LLM could not produce valid JSON: all LLM providers failed: Failed to load shared library '/opt/hostedtoolcache/ |
 | 2026-11-09T19:52:05Z | 312 | failed |  |  |  |  | [story] LLM could not produce valid JSON: all LLM providers failed: Failed to load shared library '/opt/hostedtoolcache/ |
