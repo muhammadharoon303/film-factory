@@ -804,6 +804,12 @@
       "status": "failed",
       "stage": "story",
       "error": "[story] LLM could not produce valid JSON: all LLM providers failed: Failed to load shared library '/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/llama_cpp/lib/libllama.s"
+    },
+    {
+      "started": "2026-11-12T00:46:46Z",
+      "slot": 315,
+      "status": "started",
+      "stage": "init"
     }
   ]
 }
