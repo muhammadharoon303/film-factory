@@ -857,8 +857,9 @@
     {
       "started": "2026-11-14T10:31:10Z",
       "slot": 317,
-      "status": "started",
-      "stage": "init"
+      "status": "failed",
+      "stage": "story",
+      "error": "[story] LLM could not produce valid JSON: all LLM providers failed: Failed to load shared library '/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/llama_cpp/lib/libllama.s"
     }
   ]
 }
